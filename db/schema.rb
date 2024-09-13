@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_12_152129) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_13_132237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -39,6 +39,46 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_12_152129) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "turbo_bookings", force: :cascade do |t|
+    t.bigint "turbo_user_id", null: false
+    t.bigint "turbo_car_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.float "total_price"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["turbo_car_id"], name: "index_turbo_bookings_on_turbo_car_id"
+    t.index ["turbo_user_id"], name: "index_turbo_bookings_on_turbo_user_id"
+  end
+
+  create_table "turbo_cars", force: :cascade do |t|
+    t.string "brand"
+    t.string "model"
+    t.integer "year"
+    t.float "rate"
+    t.text "description"
+    t.bigint "turbo_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["turbo_user_id"], name: "index_turbo_cars_on_turbo_user_id"
+  end
+
+  create_table "turbo_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_turbo_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_turbo_users_on_reset_password_token", unique: true
+  end
+
   add_foreign_key "rails_wl_bookmarks", "rails_wl_lists"
   add_foreign_key "rails_wl_bookmarks", "rails_wl_movies"
+  add_foreign_key "turbo_bookings", "turbo_cars"
+  add_foreign_key "turbo_bookings", "turbo_users"
+  add_foreign_key "turbo_cars", "turbo_users"
 end
